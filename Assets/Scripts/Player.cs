@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _moveSpeed;
 
     private PlayerInput _playerInput;
-    private Animator _animator;   
+    private Animator _animator;
 
     private Vector2 _direction;
     private Vector3 _currentPosition;
@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();       
+        _animator = GetComponent<Animator>();
     }
 
     private void Update()

@@ -28,7 +28,7 @@ public class Alarm : MonoBehaviour
     {
         float stepVolume;
         var timeInterval = new WaitForSeconds(waitForSecondsInterval);
-        float elepsedTime=0;
+        float elepsedTime = 0;
 
         while (true)
         {

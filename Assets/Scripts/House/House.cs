@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class House : MonoBehaviour
 {
     private Animator _animator;
@@ -13,11 +12,11 @@ public class House : MonoBehaviour
 
     public void Open()
     {
-        _animator.SetBool("IsClosed", false);
+        _animator.SetBool(HashAnimationNames.HouseAnimation.IsClosed, false);
     }
 
     public void Close()
     {
-        _animator.SetBool("IsClosed", true);
+        _animator.SetBool(HashAnimationNames.HouseAnimation.IsClosed, true);
     }
 }

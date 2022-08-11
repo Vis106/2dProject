@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 public class Player : MonoBehaviour
@@ -58,6 +56,6 @@ public class Player : MonoBehaviour
 
     private void Animate(float speed)
     {
-        _animator.SetFloat("Speed", speed);
+        _animator.SetFloat(HashAnimationNames.PlayerAnimation.SpeedHash, speed);
     }
 }

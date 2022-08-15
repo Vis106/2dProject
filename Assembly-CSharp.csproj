@@ -65,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Alarm.cs" />
-    <Compile Include="Assets\Scripts\AlarmSound.cs" />
     <Compile Include="Assets\Scripts\HashAnimationNames.cs" />
     <Compile Include="Assets\Scripts\House\House.cs" />
     <Compile Include="Assets\Scripts\InputActions\PlayerInput.cs" />

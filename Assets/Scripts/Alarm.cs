@@ -47,7 +47,7 @@ public class Alarm : MonoBehaviour
         while (_sounds.volume != targetVolume)
         {
             elepsedTime += Time.deltaTime;
-            stepVolume = 1f / deltaVolume * elepsedTime;
+            stepVolume = _maxVolume / deltaVolume * elepsedTime;
 
             _sounds.volume = stepVolume;
 

@@ -5,53 +5,58 @@ public class Alarm : MonoBehaviour
 {
     [SerializeField] private AudioClip _alarm;
     [SerializeField] private AudioSource _sounds;
-    [SerializeField] private float _deltaVolume = 0.05f;
-    [SerializeField] private float _waitForSecondsInterval = 0.1f;
+    [SerializeField] private float _deltaVolume = 0.5f;
+    [SerializeField] private float _waitForSecondsInterval = 0.01f;
 
     private float _minVolume = 0f;
     private float _maxVolume = 1f;
-    private Coroutine _setTargetVolme;
+    private Coroutine _setTargetVolume;
 
     public void TurnOn()
     {
         _sounds.PlayOneShot(_alarm);
-        SetTargetVolume(_maxVolume, _deltaVolume, _waitForSecondsInterval);
+        SetTargetVolume(_sounds.volume, _maxVolume, _deltaVolume, _waitForSecondsInterval);
     }
 
     public void TurnOf()
     {
-        SetTargetVolume(_minVolume, -_deltaVolume, _waitForSecondsInterval);
-
-        if (_sounds.volume == _minVolume)
+        if (_setTargetVolume != null)
         {
-            _sounds.Stop();
-        }
-    }
-
-    public void SetTargetVolume(float targetVolume, float deltaVolume, float waitForSecondsInterval)
-    {
-        if (_setTargetVolme != null)
-        {
-            StopCoroutine(_setTargetVolme);
+            StopCoroutine(_setTargetVolume);
         }
 
-        _setTargetVolme = StartCoroutine(ChangeVolume(targetVolume, deltaVolume, waitForSecondsInterval));
+        _setTargetVolume = StartCoroutine(TurningOffSound());
     }
 
-    private IEnumerator ChangeVolume(float targetVolume, float deltaVolume, float waitForSecondsInterval)
+    private Coroutine SetTargetVolume(float currentVolume, float targetVolume, float deltaVolume, float waitForSecondsInterval)
     {
-        float stepVolume;
+        if (_setTargetVolume != null)
+        {
+            StopCoroutine(_setTargetVolume);
+        }
+
+        return _setTargetVolume = StartCoroutine(ChangeVolume(currentVolume, targetVolume, deltaVolume, waitForSecondsInterval));
+    }
+
+    private IEnumerator ChangeVolume(float currentVolume, float targetVolume, float deltaVolume, float waitForSecondsInterval)
+    {
         var timeInterval = new WaitForSeconds(waitForSecondsInterval);
-        float elepsedTime = 0;
 
         while (_sounds.volume != targetVolume)
         {
-            elepsedTime += Time.deltaTime;
-            stepVolume = _maxVolume / deltaVolume * elepsedTime;
-
-            _sounds.volume = stepVolume;
+            if (targetVolume == _maxVolume)
+                _sounds.volume += Mathf.MoveTowards(currentVolume, targetVolume, deltaVolume * Time.deltaTime);
+            else
+                _sounds.volume -= Mathf.MoveTowards(currentVolume, targetVolume, deltaVolume * Time.deltaTime);
 
             yield return timeInterval;
         }
+    }
+
+    private IEnumerator TurningOffSound()
+    {
+        yield return SetTargetVolume(_sounds.volume, _minVolume, _deltaVolume, _waitForSecondsInterval);
+
+        _sounds.Stop();
     }
 }

@@ -15,7 +15,7 @@ public class Alarm : MonoBehaviour
     public void TurnOn()
     {
         _sounds.PlayOneShot(_alarm);
-        SetTargetVolume(_sounds.volume, _maxVolume, _deltaVolume, _waitForSecondsInterval);
+        SetTargetVolume(_maxVolume, _deltaVolume, _waitForSecondsInterval);
     }
 
     public void TurnOf()
@@ -28,26 +28,23 @@ public class Alarm : MonoBehaviour
         _setTargetVolume = StartCoroutine(TurningOffSound());
     }
 
-    private Coroutine SetTargetVolume(float currentVolume, float targetVolume, float deltaVolume, float waitForSecondsInterval)
+    private Coroutine SetTargetVolume(float targetVolume, float deltaVolume, float waitForSecondsInterval)
     {
         if (_setTargetVolume != null)
         {
             StopCoroutine(_setTargetVolume);
         }
 
-        return _setTargetVolume = StartCoroutine(ChangeVolume(currentVolume, targetVolume, deltaVolume, waitForSecondsInterval));
+        return _setTargetVolume = StartCoroutine(ChangeVolume(targetVolume, deltaVolume, waitForSecondsInterval));
     }
 
-    private IEnumerator ChangeVolume(float currentVolume, float targetVolume, float deltaVolume, float waitForSecondsInterval)
+    private IEnumerator ChangeVolume(float targetVolume, float deltaVolume, float waitForSecondsInterval)
     {
         var timeInterval = new WaitForSeconds(waitForSecondsInterval);
 
         while (_sounds.volume != targetVolume)
         {
-            if (targetVolume == _maxVolume)
-                _sounds.volume += Mathf.MoveTowards(currentVolume, targetVolume, deltaVolume * Time.deltaTime);
-            else
-                _sounds.volume -= Mathf.MoveTowards(currentVolume, targetVolume, deltaVolume * Time.deltaTime);
+            _sounds.volume = Mathf.MoveTowards(_sounds.volume, targetVolume, deltaVolume * Time.deltaTime);
 
             yield return timeInterval;
         }
@@ -55,7 +52,7 @@ public class Alarm : MonoBehaviour
 
     private IEnumerator TurningOffSound()
     {
-        yield return SetTargetVolume(_sounds.volume, _minVolume, _deltaVolume, _waitForSecondsInterval);
+        yield return SetTargetVolume(_minVolume, _deltaVolume, _waitForSecondsInterval);
 
         _sounds.Stop();
     }

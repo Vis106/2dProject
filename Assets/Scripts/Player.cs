@@ -9,12 +9,14 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform _groundCheckPoint;
     [SerializeField] private LayerMask _groundCheckMask;
 
+    
     private const float __groundCheckRadius = 0.2F;
     private PlayerInput _playerInput;
     private Animator _animator;
     private Rigidbody2D _rigidBody;
     private bool _movingRight = true;
     private bool _isGrounded;
+    private Vector3 _startPosition;
 
     private Vector2 _direction;
     private Vector3 _currentPosition;
@@ -28,6 +30,7 @@ public class Player : MonoBehaviour
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
+        _startPosition = transform.position;
     }
 
     private void Update()
@@ -39,10 +42,15 @@ public class Player : MonoBehaviour
         if (_direction.x < 0 && !_movingRight)
             Flip();
         else if (_direction.x > 0 && _movingRight)
-            Flip();
+            Flip();         
 
         if (_direction.y > 0)
             Jump(_jumpForce);
+    }
+
+    public void ReturnToStart()
+    {
+        transform.position = _startPosition;
     }
 
     private void OnEnable()
@@ -99,5 +107,5 @@ public class Player : MonoBehaviour
 
         if (colliders.Length > 0)
             _isGrounded = true;
-    }
+    }    
 }

@@ -13,7 +13,7 @@ public class EnemySpawner : ObjectPool
     private void Start()
     {
         Initialize(_enemyPrefab.gameObject);
-        TurnOnSpawner();
+        TurnOn();
     }
         
     private IEnumerator SpawnEnemy()
@@ -36,7 +36,7 @@ public class EnemySpawner : ObjectPool
         enemy.transform.position = spawnPoint;
     }
 
-    private void TurnOnSpawner()
+    private void TurnOn()
     {
         if (_spawnEnemyWithDelay != null)
         {

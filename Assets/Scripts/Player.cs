@@ -9,13 +9,12 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform _groundCheckPoint;
     [SerializeField] private LayerMask _groundCheckMask;
 
-    
-    private const float __groundCheckRadius = 0.2F;
+    private const float GroundCheckRadius = 0.2F;
+
     private PlayerInput _playerInput;
     private Animator _animator;
     private Rigidbody2D _rigidBody;
     private bool _movingRight = true;
-    private bool _isGrounded;
     private Vector3 _startPosition;
 
     private Vector2 _direction;
@@ -42,7 +41,7 @@ public class Player : MonoBehaviour
         if (_direction.x < 0 && !_movingRight)
             Flip();
         else if (_direction.x > 0 && _movingRight)
-            Flip();         
+            Flip();
 
         if (_direction.y > 0)
             Jump(_jumpForce);
@@ -65,8 +64,7 @@ public class Player : MonoBehaviour
 
     private void Jump(float jumpForce)
     {
-        GroundCheck();
-        if (_isGrounded)
+        if (CheckGround())
             _rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
     }
 
@@ -99,13 +97,10 @@ public class Player : MonoBehaviour
         _movingRight = !_movingRight;
     }
 
-    private void GroundCheck()
+    private bool CheckGround()
     {
-        _isGrounded = false;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(_groundCheckPoint.position, GroundCheckRadius, _groundCheckMask);
 
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(_groundCheckPoint.position, __groundCheckRadius, _groundCheckMask);
-
-        if (colliders.Length > 0)
-            _isGrounded = true;
-    }    
+        return colliders.Length > 0;
+    }
 }

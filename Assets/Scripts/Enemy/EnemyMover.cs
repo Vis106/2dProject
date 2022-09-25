@@ -9,15 +9,8 @@ public class EnemyMover : MonoBehaviour
     [SerializeField] private LayerMask _groundCheckMask;
 
     private bool _movingRight = true;
-    private bool _isReachedEndPlatform=false;
-    private const float __groundCheckRadius = 0.2F;
 
-    private void Start()
-    {
-        //Vector3 currentScale = gameObject.transform.localScale;
-        //currentScale.x = -1;
-        //gameObject.transform.localScale = currentScale;
-    }
+    private const float GroundCheckRadius = 0.2F;
 
     private void Update()
     {
@@ -26,9 +19,7 @@ public class EnemyMover : MonoBehaviour
         else
             transform.Translate(Vector3.left * _speed * Time.deltaTime);
 
-        GroundCheck();
-
-        if (_isReachedEndPlatform)
+        if (CheckEndPlatform())
             Flip();
     }
 
@@ -41,13 +32,10 @@ public class EnemyMover : MonoBehaviour
         _movingRight = !_movingRight;
     }
 
-    private void GroundCheck()
+    private bool CheckEndPlatform()
     {
-        _isReachedEndPlatform = false;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(_groundDetection.position, GroundCheckRadius, _groundCheckMask);
 
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(_groundDetection.position, __groundCheckRadius, _groundCheckMask);
-
-        if (colliders.Length == 0)
-            _isReachedEndPlatform = true;
+        return colliders.Length == 0;
     }
 }

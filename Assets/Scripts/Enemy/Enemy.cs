@@ -8,11 +8,10 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.TryGetComponent(out EndMapZone zone))
-        {
-        Die();
-        }
+        if (collision.TryGetComponent(out EndMapZone zone))
+            Die();
     }
+
     private void Die()
     {
         gameObject.SetActive(false);

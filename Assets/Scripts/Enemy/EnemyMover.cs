@@ -8,34 +8,21 @@ public class EnemyMover : MonoBehaviour
     [SerializeField] private Transform _groundDetection;
     [SerializeField] private LayerMask _groundCheckMask;
 
+    private Vector3 _currentPosition;
     private bool _movingRight = true;
 
     private const float GroundCheckRadius = 0.2F;
 
     private void Update()
     {
+        _currentPosition = transform.position;
+
         if (_movingRight)
-            transform.Translate(Vector3.right * _speed * Time.deltaTime);
+            Movement.Move(_speed, Vector3.right, _currentPosition, gameObject, out Vector3 between);            
         else
-            transform.Translate(Vector3.left * _speed * Time.deltaTime);
+            Movement.Move(_speed, Vector3.left, _currentPosition, gameObject, out Vector3 between);
 
-        if (CheckEndPlatform())
-            Flip();
-    }
-
-    private void Flip()
-    {
-        Vector3 currentScale = gameObject.transform.localScale;
-        currentScale.x *= -1;
-        gameObject.transform.localScale = currentScale;
-
-        _movingRight = !_movingRight;
-    }
-
-    private bool CheckEndPlatform()
-    {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(_groundDetection.position, GroundCheckRadius, _groundCheckMask);
-
-        return colliders.Length == 0;
+        if (!ControlGround.CheckGround(_groundDetection, _groundCheckMask, GroundCheckRadius))
+            Movement.Flip(gameObject, ref _movingRight);
     }
 }

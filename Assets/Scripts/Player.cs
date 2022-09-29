@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     private PlayerInput _playerInput;
     private Animator _animator;
     private Rigidbody2D _rigidBody;
-    private bool _movingRight = true;
+    private bool _movingRight = false;
     private Vector3 _startPosition;
 
     private Vector2 _direction;
@@ -36,15 +36,17 @@ public class Player : MonoBehaviour
     {
         _currentPosition = transform.position;
         _direction = _playerInput.Player.Move.ReadValue<Vector2>();
-        Move(_direction);
+
+        Movement.Move(_moveSpeed, _direction, _currentPosition, gameObject, out Vector3 between);
+        Animate(between.magnitude);
 
         if (_direction.x < 0 && !_movingRight)
-            Flip();
+             Movement.Flip(gameObject, ref _movingRight);
         else if (_direction.x > 0 && _movingRight)
-            Flip();
+            Movement.Flip(gameObject, ref _movingRight);
 
         if (_direction.y > 0)
-            Jump(_jumpForce);
+            Movement.Jump(_rigidBody,_jumpForce, ControlGround.CheckGround(_groundCheckPoint, _groundCheckMask, GroundCheckRadius));
     }
 
     public void ReturnToStart()
@@ -61,46 +63,9 @@ public class Player : MonoBehaviour
     {
         _playerInput.Disable();
     }
-
-    private void Jump(float jumpForce)
-    {
-        if (CheckGround())
-            _rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
-    }
-
-    private void Move(Vector2 direction)
-    {
-        Vector3 move = new Vector3(direction.x, direction.y);
-
-        float scaledMoveSpeed = _moveSpeed * Time.deltaTime;
-
-        Vector3 targetPosition = _currentPosition + move;
-        Vector3 newPosition = Vector3.MoveTowards(_currentPosition, targetPosition, scaledMoveSpeed);
-
-        transform.position = newPosition;
-
-        Vector3 between = newPosition - _currentPosition;
-        Animate(between.magnitude);
-    }
-
+    
     private void Animate(float speed)
     {
         _animator.SetFloat(HashAnimationNames.PlayerAnimation.SpeedHash, speed);
-    }
-
-    private void Flip()
-    {
-        Vector3 currentScale = gameObject.transform.localScale;
-        currentScale.x *= -1;
-        gameObject.transform.localScale = currentScale;
-
-        _movingRight = !_movingRight;
-    }
-
-    private bool CheckGround()
-    {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(_groundCheckPoint.position, GroundCheckRadius, _groundCheckMask);
-
-        return colliders.Length > 0;
     }
 }

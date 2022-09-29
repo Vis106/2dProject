@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class Coin : MonoBehaviour
 {
-    [SerializeField] UnityEvent _collected = new UnityEvent();     
+    [SerializeField] private UnityEvent _collected = new UnityEvent();     
 
     public event UnityAction Collected
     {
@@ -26,10 +26,5 @@ public class Coin : MonoBehaviour
             _collected.Invoke();
             gameObject.SetActive(false);
         }
-    }
-
-    public void GiveReward()
-    {
-
     }
 }
